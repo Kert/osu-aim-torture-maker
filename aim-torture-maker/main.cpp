@@ -73,7 +73,7 @@ int main(int argc, char** argv)
 		seconds %= 60;
 		int hours = minutes / 60;
 		minutes %= 60;
-		std::cout << "Estimated Map time: " << hours << ":" << std::setfill('0') << std::setw(2) << minutes << ":" << seconds << " with " << estCount << " circles" << std::endl;
+		std::cout << "Estimated Map time: " << hours << ":" << std::setfill('0') << std::setw(2) << minutes << ":" << std::setfill('0') << std::setw(2) << seconds << " with " << estCount << " circles" << std::endl;
 		std::cout << "Are you ok with that? Type y or n (default y)" << std::endl;
 		std::string answer;
 		getline(std::cin, answer);
