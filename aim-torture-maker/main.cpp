@@ -45,7 +45,7 @@ int main(int argc, char** argv)
 	std::cin >> OFFSET;
 	std::cout << "Bpm pls" << std::endl;
 	std::cin >> TIMESTEP;
-	TIMESTEP = 60000 / TIMESTEP / 2;
+	TIMESTEP = 60000 / TIMESTEP;
 	std::cout << "Precision step pls. For best results use 128 or 64 or 32" << std::endl;
 	std::cin >> STEP;
 
