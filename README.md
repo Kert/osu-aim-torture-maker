@@ -4,6 +4,10 @@ This is a program to help making aim training maps for osu! that will force your
 
 All the circles are placed on the borders of the playfield for maximum pleasure.
 
+# Example mapset
+
+https://osu.ppy.sh/beatmapsets/1533708
+
 # How to use
 
 1. Create a map with a song that has static bpm
@@ -13,6 +17,12 @@ All the circles are placed on the borders of the playfield for maximum pleasure.
 5. Wait a bit and get your hitcircle data in hitobjects.txt that you can copypaste into the map
 6. pls enjoy aim
 
-# Example mapset
+# How it works?
 
-https://osu.ppy.sh/beatmapsets/1533708
+Initially it chooses all the circles on the borders of the playfield fitting precision step criteria e.g. for step 128 circles at 0:0, 0:128, 0:256, 0:384, 128:0, 256:0 e.t.c are chosen.
+
+Then it finds all possible paths between circles. (from each circle to another one in both directions)
+
+And lastly it makes one single **random** sequence of circles that follows all the paths and **only once** for each path.
+
+Paths that follow the same straight line are filtered out e.g. 0:32 to 0:64 and 0:0 to 0:384 are on the same line so only 0:0 to 0:384 and backwards is used.
