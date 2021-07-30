@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <random>
 #include <stack>
@@ -34,6 +35,17 @@ void PrintCircles(std::vector<Path> &paths, std::ofstream &file)
 	}
 }
 
+int EstimateCircleCount(int step)
+{
+	int points = (PLAYFIELD_X / step + PLAYFIELD_Y / step) * 2;
+	int paths = points * points;
+	int xCircles = PLAYFIELD_X / step + 1;
+	int yCircles = PLAYFIELD_Y / step + 1;
+	paths -= xCircles * xCircles * 2 - 3 + yCircles * yCircles * 2 - 1;
+	paths += 8;
+	return paths;
+}
+
 int main(int argc, char** argv)
 {
 	std::ofstream filepath;
@@ -41,13 +53,36 @@ int main(int argc, char** argv)
 	filepath.open(filename);
 	filepath << "[HitObjects]" << std::endl;
 
+	std::string answer;
 	std::cout << "Offset pls" << std::endl;
-	std::cin >> OFFSET;
+	getline(std::cin, answer);
+	OFFSET = stoi(answer);
 	std::cout << "Bpm pls" << std::endl;
-	std::cin >> TIMESTEP;
-	TIMESTEP = 60000 / TIMESTEP;
-	std::cout << "Precision step pls. For best results use 128 or 64 or 32" << std::endl;
-	std::cin >> STEP;
+	getline(std::cin, answer);
+	TIMESTEP = 60000 / stod(answer);
+	while(1)
+	{
+		std::cout << "Precision step pls. For best results use 128 or 64 or 32" << std::endl;
+		getline(std::cin, answer);
+		STEP = stoi(answer);
+		int estCount = EstimateCircleCount(STEP);
+		int ms = OFFSET + TIMESTEP * estCount;
+		int seconds = ms / 1000;
+		ms %= 1000;
+		int minutes = seconds / 60;
+		seconds %= 60;
+		int hours = minutes / 60;
+		minutes %= 60;
+		std::cout << "Estimated Map time: " << hours << ":" << std::setfill('0') << std::setw(2) << minutes << ":" << seconds << " with " << estCount << " circles" << std::endl;
+		std::cout << "Are you ok with that? Type y or n (default y)" << std::endl;
+		std::string answer;
+		getline(std::cin, answer);
+		if(answer == "y" || answer.empty())
+			break;
+		else
+			continue;
+	}
+
 
 	// Find all points on the borders of the playfield where the circles can be placed
 	// Depends on the precision step
@@ -84,8 +119,6 @@ int main(int argc, char** argv)
 	{
 		for(int j = 0; j < points.size(); j++)
 		{
-			if(i == j)
-				continue;
 			int x1, x2, y1, y2;
 			x1 = points[i].x;
 			y1 = points[i].y;
@@ -101,12 +134,10 @@ int main(int argc, char** argv)
 				continue;
 			if(y1 == PLAYFIELD_Y && y2 == PLAYFIELD_Y)
 				continue;
-
 			Path path;
 			path.p1 = points[i];
 			path.p2 = points[j];
 			paths.push_back(path);
-
 		}
 	}
 
