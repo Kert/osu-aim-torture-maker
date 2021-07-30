@@ -26,3 +26,5 @@ Then it finds all possible paths between circles. (from each circle to another o
 And lastly it makes one single **random** sequence of circles that follows all the paths and **only once** for each path.
 
 Paths that follow the same straight line are filtered out e.g. 0:32 to 0:64 and 0:0 to 0:384 are on the same line so only 0:0 to 0:384 and backwards is used.
+
+osu! playfield is 512x384 osu! units
