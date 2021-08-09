@@ -30,7 +30,12 @@ void PrintCircles(std::vector<Path> &paths, std::ofstream &file)
 	int circles = 0;
 	for(auto &p : paths)
 	{
-		file << p.p1.x << "," << p.p1.y << "," << (int)(OFFSET + circles * TIMESTEP) << ",1,0" << std::endl;
+		const int FLAG_CIRCLE =   0b00000001;
+		const int FLAG_NEWCOMBO = 0b00000100;
+		int objectType = FLAG_CIRCLE;
+		if(!(circles % 8)) // Combos will change every 8 circles
+			objectType |= FLAG_NEWCOMBO;
+		file << p.p1.x << "," << p.p1.y << "," << (int)(OFFSET + circles * TIMESTEP) << "," << objectType << ",0" << std::endl;
 		circles++;
 	}
 }
