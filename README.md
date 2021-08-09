@@ -14,8 +14,9 @@ https://osu.ppy.sh/beatmapsets/1533708
 2. Find the correct offset and bpm
 3. Open this program and input them here
 4. Type in the step value 128 or 64 or 32. It decides how precise you want to train your muscle memory/aim. Step 128 / 64 / 32 correspond to total 126 / 536 / 2232 generated circles
-5. Wait a bit and get your hitcircle data in hitobjects.txt that you can copypaste into the map
-6. pls enjoy aim
+5. (OPTIONAL) Specify random seed
+6. Wait a bit and get your hitcircle data in hitobjects.txt that you can copypaste into the map
+7. pls enjoy aim
 
 # How it works?
 
