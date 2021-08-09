@@ -65,11 +65,27 @@ int main(int argc, char** argv)
 	std::cout << "Bpm pls" << std::endl;
 	getline(std::cin, answer);
 	TIMESTEP = 60000 / stod(answer);
+	unsigned int randomSeed;
+	std::mt19937 mt;
 	while(1)
 	{
 		std::cout << "Precision step pls. For best results use 128 or 64 or 32" << std::endl;
 		getline(std::cin, answer);
 		STEP = stoi(answer);
+
+		std::cout << "Specify random seed. Or press enter to generate random seed" << std::endl;
+		getline(std::cin, answer);
+
+		if(answer.empty())
+		{
+			std::random_device rd;
+			randomSeed = rd();
+		}
+		else
+			randomSeed = stoi(answer);
+
+		mt.seed(randomSeed);
+
 		int estCount = EstimateCircleCount(STEP);
 		int ms = OFFSET + TIMESTEP * estCount;
 		int seconds = ms / 1000;
@@ -79,6 +95,7 @@ int main(int argc, char** argv)
 		int hours = minutes / 60;
 		minutes %= 60;
 		std::cout << "Estimated Map time: " << hours << ":" << std::setfill('0') << std::setw(2) << minutes << ":" << std::setfill('0') << std::setw(2) << seconds << " with " << estCount << " circles" << std::endl;
+		std::cout << "Random seed: " << randomSeed << std::endl;
 		std::cout << "Are you ok with that? Type y or n (default y)" << std::endl;
 		std::string answer;
 		getline(std::cin, answer);
@@ -161,8 +178,6 @@ int main(int argc, char** argv)
 	paths.push_back({ p3,p4 });
 	paths.push_back({ p4,p3 });
 
-	std::random_device rd;
-	std::mt19937 mt(rd());
 	std::shuffle(std::begin(paths), std::end(paths), mt);
 
 	//PrintCircles(paths, filepath);
