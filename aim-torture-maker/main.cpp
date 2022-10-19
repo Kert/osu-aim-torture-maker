@@ -7,11 +7,12 @@
 #include <string>
 #include <vector>
 
-const int PLAYFIELD_X = 512;
-const int PLAYFIELD_Y = 384;
+const int PLAYFIELD_WIDTH = 512;
+const int PLAYFIELD_HEIGHT = 384;
 int OFFSET = 0; // Map audio
 double TIMESTEP = 300; // ms between circles
-int STEP = 64; // Step between points in osu! units
+int POINTS_HORIZONTAL = 8;
+int POINTS_VERTICAL = 6;
 
 struct Point
 {
@@ -40,12 +41,12 @@ void PrintCircles(std::vector<Path> &paths, std::ofstream &file)
 	}
 }
 
-int EstimateCircleCount(int step)
+int EstimateCircleCount(int amountX, int amountY)
 {
-	int points = (PLAYFIELD_X / step + PLAYFIELD_Y / step) * 2;
+	int points = (amountX + amountY) * 2;
 	int paths = points * points;
-	int xCircles = PLAYFIELD_X / step + 1;
-	int yCircles = PLAYFIELD_Y / step + 1;
+	int xCircles = amountX + 1;
+	int yCircles = amountY + 1;
 	paths -= xCircles * xCircles * 2 - 3 + yCircles * yCircles * 2 - 1;
 	paths += 8;
 	return paths;
@@ -69,9 +70,25 @@ int main(int argc, char** argv)
 	std::mt19937 mt;
 	while(1)
 	{
-		std::cout << "Precision step pls. For best results use 128 or 64 or 32" << std::endl;
+    std::cout << "osu! playfield is 512x384 osu! units" << std::endl;
+    std::cout << "How precise horizontally? More points - more precise" << std::endl;
+    std::cout << "default = 8. 512 / 8 -> 64 osu! units between points" << std::endl;
 		getline(std::cin, answer);
-		STEP = stoi(answer);
+    if (answer.empty() || stoi(answer) <= 0)
+      POINTS_HORIZONTAL = 8;
+    else
+      POINTS_HORIZONTAL = stoi(answer);
+    std::cout << "Using " << POINTS_HORIZONTAL << std::endl << std::endl;
+
+    std::cout << "osu! playfield is 512x384 osu! units" << std::endl;
+    std::cout << "How precise vertically? More points - more precise" << std::endl;
+    std::cout << "default = 6. 384 / 6 -> 64 osu! units between points" << std::endl;
+    getline(std::cin, answer);
+    if (answer.empty() || stoi(answer) <= 0)
+      POINTS_VERTICAL = 6;
+    else
+      POINTS_VERTICAL = stoi(answer);
+    std::cout << "Using " << POINTS_VERTICAL << std::endl << std::endl;
 
 		std::cout << "Specify random seed. Or press enter to generate random seed" << std::endl;
 		getline(std::cin, answer);
@@ -86,7 +103,7 @@ int main(int argc, char** argv)
 
 		mt.seed(randomSeed);
 
-		int estCount = EstimateCircleCount(STEP);
+		int estCount = EstimateCircleCount(POINTS_HORIZONTAL, POINTS_VERTICAL);
 		int ms = OFFSET + TIMESTEP * estCount;
 		int seconds = ms / 1000;
 		ms %= 1000;
@@ -110,23 +127,21 @@ int main(int argc, char** argv)
 	// Depends on the precision step
 	std::vector<Point> points;
 
-	for(int x = 0; x <= PLAYFIELD_X; x += STEP)
-	{
-		int y = 0;
-		points.push_back({ x, y });
-		y = PLAYFIELD_Y;
-		points.push_back({ x, y });
-	}
+  double STEP_X = (double)PLAYFIELD_WIDTH / POINTS_HORIZONTAL;
+  for (int i = 0; i <= POINTS_HORIZONTAL; i++)
+  {
+    int x = STEP_X * i;
+    points.push_back({ x, 0 });
+    points.push_back({ x, PLAYFIELD_HEIGHT });
+  }
 
-	for(int y = 0; y <= PLAYFIELD_Y; y += STEP)
-	{
-		if(y == 0 || y == PLAYFIELD_Y) // Avoid duplicates
-			continue;
-		int x = 0;
-		points.push_back({ x, y });
-		x = PLAYFIELD_X;
-		points.push_back({ x, y });
-	}
+  double STEP_Y = (double)PLAYFIELD_HEIGHT / POINTS_VERTICAL;
+  for (int i = 1; i < POINTS_VERTICAL; i++)
+  {
+    int y = STEP_Y * i;
+    points.push_back({ 0, y });
+    points.push_back({ PLAYFIELD_WIDTH, y });
+  }
 
 	// print points
 	//for(auto c : points) {
@@ -152,9 +167,9 @@ int main(int argc, char** argv)
 				continue;
 			if(y1 == 0 && y2 == 0)
 				continue;
-			if(x1 == PLAYFIELD_X && x2 == PLAYFIELD_X)
+			if(x1 == PLAYFIELD_WIDTH && x2 == PLAYFIELD_WIDTH)
 				continue;
-			if(y1 == PLAYFIELD_Y && y2 == PLAYFIELD_Y)
+			if(y1 == PLAYFIELD_HEIGHT && y2 == PLAYFIELD_HEIGHT)
 				continue;
 			Path path;
 			path.p1 = points[i];
@@ -166,9 +181,9 @@ int main(int argc, char** argv)
 	// Add paths exactly on borders
 	Point p1, p2, p3, p4;
 	p1 = { 0,0 };
-	p2 = { 0, PLAYFIELD_Y };
-	p3 = { PLAYFIELD_X, 0 };
-	p4 = { PLAYFIELD_X, PLAYFIELD_Y };
+	p2 = { 0, PLAYFIELD_HEIGHT };
+	p3 = { PLAYFIELD_WIDTH, 0 };
+	p4 = { PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT };
 	paths.push_back({ p1,p2 });
 	paths.push_back({ p2,p1 });
 	paths.push_back({ p1,p3 });
