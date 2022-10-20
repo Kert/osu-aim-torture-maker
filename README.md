@@ -13,14 +13,14 @@ https://osu.ppy.sh/beatmapsets/1533708
 1. Create a map with a song that has static bpm
 2. Find the correct offset and bpm
 3. Open this program and input them here
-4. Type in the step value 128 or 64 or 32. It decides how precise you want to train your muscle memory/aim. Step 128 / 64 / 32 correspond to total 126 / 536 / 2232 generated circles
+4. Type in how precise you want to train your muscle memory/aim horizontally and vertically. More points - more precise
 5. (OPTIONAL) Specify random seed
 6. Wait a bit and get your hitcircle data in hitobjects.txt that you can copypaste into the map
 7. pls enjoy aim
 
 # How it works?
 
-Initially it chooses all the circles on the borders of the playfield fitting precision step criteria e.g. for step 128 circles at 0:0, 0:128, 0:256, 0:384, 128:0, 256:0 e.t.c are chosen.
+Initially it chooses all the circles on the borders of the playfield depending on how many points horizontally and vertically you typed in e.g. for 8 horizontal points osu! playfield horizontal border is divided by 8 -> 512 / 8 -> 64. Every 64 osu! units on the playfield on the border there will be a circle used for generating the map: 0:0, 64:0, 128:0, 192:0, 256:0, 320:0, 384:0, 448:0, 512:0 at the top of the playfield and 0:384, 64:384, 128:384 e.t.c. at the bottom of the playfield
 
 Then it finds all possible paths between circles. (from each circle to another one in both directions)
 
