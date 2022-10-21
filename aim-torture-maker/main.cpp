@@ -99,7 +99,7 @@ int main(int argc, char** argv)
 			randomSeed = rd();
 		}
 		else
-			randomSeed = stoi(answer);
+			randomSeed = stoul(answer);
 
 		mt.seed(randomSeed);
 
